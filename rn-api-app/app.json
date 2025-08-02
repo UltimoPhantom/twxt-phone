@@ -20,10 +20,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.phantom111111.rnapiapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f7d89094-dbf5-4033-918a-db8ac0638ebc"
+      }
     }
   }
 }
