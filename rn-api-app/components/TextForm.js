@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import axios from 'axios';
 import { API_ENDPOINTS } from '../config/api';
+import Svg, { Path } from 'react-native-svg';
 
-export default function TextForm() {
+export default function TextForm({ onTextAdded }) {
   const [text, setText] = useState('');
 
   const handleSubmit = async () => {
@@ -14,40 +15,89 @@ export default function TextForm() {
         text_content: text,
       });
       setText('');
-      // You can handle the response and update the parent component or store the data
-      console.log('New text added:', response.data);
+      if (onTextAdded) {
+        onTextAdded(response.data);
+      }
     } catch (error) {
       console.error('Error adding text:', error);
     }
   };
 
-  return (
-    <View style={styles.form}>
-      <TextInput
-        value={text}
-        onChangeText={setText}
-        style={styles.input}
-        placeholder="Enter text"
-        multiline
+  const PlusIcon = () => (
+    <Svg width={40} height={40} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M12 4v16m8-8H4"
+        stroke="#000000"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <Button title="Add Text" onPress={handleSubmit} />
+    </Svg>
+  );
+
+  return (
+    <View style={formStyles.formContainer}>
+      <View style={formStyles.inputContainer}>
+        <TextInput
+          value={text}
+          onChangeText={setText}
+          style={formStyles.input}
+          placeholder="Enter text"
+          placeholderTextColor="#666666"
+          multiline
+          returnKeyType="done"
+          blurOnSubmit={true}
+        />
+        <TouchableOpacity 
+          style={formStyles.button} 
+          onPress={handleSubmit}
+          activeOpacity={0.8}
+        >
+          <PlusIcon />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  form: {
-    marginBottom: 20,
-    marginTop: 20,
+const formStyles = StyleSheet.create({
+  formContainer: {
+    marginBottom: 64,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    width: '95%',
+    maxWidth: 800,
+    backgroundColor: '#edede1',
+    borderRadius: 0,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 8,
   },
   input: {
-    height: 60,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 10,
-    padding: 10,
-    fontSize: 18,
-    borderRadius: 8,
-    backgroundColor: '#fff',
+    flex: 1,
+    padding: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#374151',
+    backgroundColor: '#edede1',
+    borderRadius: 0,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+    minHeight: 60,
+    textAlignVertical: 'center',
+  },
+  button: {
+    width: 64,
+    height: 64,
+    backgroundColor: '#edede1',
+    borderRadius: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderLeftWidth: 1,
+    borderLeftColor: '#cccccc',
   },
 });
